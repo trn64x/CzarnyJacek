@@ -1,8 +1,16 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  width:100vw;
+  height:100vh;
+  margin:0;
+  padding:0;
+  background-image:url("./images/blackjack.jpg");
+  background-size:cover;
+  background-position: center;
+  background-repeat: no-repeat;
   text-align: center;
+  display:flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .logo {
@@ -39,4 +47,65 @@
 
 .read-the-docs {
   color: #888;
+}
+.container-dealer{
+  width:100%;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.container-player{
+  width:100%;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  
+}
+.count{
+  font-size:40px;
+  font-weight: 900;
+}
+.option button{
+  margin-left:20px;
+  margin-right:20px;
+  width:10vw;
+  border:2px solid grey;
+}
+.option button:hover{
+  border:2px solid rgb(255, 0, 0);
+}
+.option{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  height:20vh;
+  width:100vw;
+}
+.card-container-dealer{
+  overflow-x: scroll;
+  height:25vh;
+  width:100%;
+  display:flex;
+  justify-content: space-around;
+  flex-direction: row;
+}
+.card-container-player{
+  height:25vh;
+  width:100%;
+  overflow-x: scroll;
+  display:flex;
+  justify-content: space-around;
+  flex-direction: row;
+}
+.card svg{
+  height:80%;
+  width:auto;
+  object-fit: contain;
+}
+@media only screen and (max-width:750px){
+  *{
+    display:none;
+  }
 }

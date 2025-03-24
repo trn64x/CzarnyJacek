@@ -87,7 +87,7 @@ if(playerSum > 21) return;
 setTimeout(()=>{
   let dealerSet = [...dealerCards];
   let dealerNewSum = calculateSum(dealerSet);
-  if(playerSum > dealerSum){
+  if(playerSum >= dealerSum){
   while(dealerNewSum < 17){
       const newCard = getRandomCard();
       dealerSet.push(newCard);

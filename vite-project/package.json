@@ -7,12 +7,15 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:worker":"npm run build && wrangler dev",
+    "deploy:worker":"npm run build && wrangler deploy"
   },
   "dependencies": {
     "@letele/playing-cards": "^0.1.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "wrangler": "^4.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

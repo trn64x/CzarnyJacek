@@ -30,22 +30,20 @@ function App() {
     { index: "Sa", value: "11 or 1" },{index:"B1", value: 0}
   ];
   let drawnCards = [];
-  function getRandomCard() {
-    let random;
-    do {
-      random = cards[Math.floor(Math.random() * cards.length - 1)];
-    } while (drawnCards.includes(random));
-    drawnCards.push(random);
-    return random;
-  }
-  // eslint-disable-next-line no-unused-vars
   let [playerCards, setPlayerCards] = useState([getRandomCard(), getRandomCard()]);
-    // eslint-disable-next-line no-unused-vars
   const [dealerCards, setDealerCards] = useState([getRandomCard(), cards[cards.length - 1]]);
   let [gameStatus, setgameStatus] = useState("");
   const [isEnd, setisEnd] = useState(false);
   const [isTrue,setisTrue] = useState(false);
   
+  function getRandomCard() {
+    let random;
+    do {
+      random = cards[Math.floor((Math.random() * cards.length) - 1)];
+    } while (drawnCards.includes(random));
+    drawnCards.push(random);
+    return random;
+  }
   function calculateSum(hand) {
     let sum = 0;
     let aceCount = 0;
@@ -67,6 +65,7 @@ function App() {
 
   const playerSum = calculateSum(playerCards);
   const dealerSum = calculateSum(dealerCards);
+  
   const HandleHit = () =>{
     playerSum < 21 ? setPlayerCards(prevObjects => [...prevObjects, getRandomCard()]) : null;
   }
@@ -80,18 +79,21 @@ function App() {
     });
     setisTrue(true);
   }
+
   useEffect(()=> {
 if(!isTrue) return;
 if(playerSum > 21) return;
 setTimeout(()=>{
   let dealerSet = [...dealerCards];
   let dealerNewSum = calculateSum(dealerSet);
+  if(playerSum > dealerSum){
   while(dealerNewSum < 17){
       const newCard = getRandomCard();
       dealerSet.push(newCard);
       dealerNewSum = calculateSum(dealerSet);
       console.log(dealerNewSum);
   }
+}
   setDealerCards(dealerSet);
   if(dealerNewSum > 21 || playerSum > dealerNewSum){
     setgameStatus(" U WON!");
@@ -106,7 +108,7 @@ setTimeout(()=>{
   setisTrue(true);
 },1000)
 
-  }, [isTrue])
+  }, [isTrue]);
   useEffect(() => {
     console.log("Player sum:", playerSum, "Dealer sum:", dealerSum);
     if (playerSum > 21) {

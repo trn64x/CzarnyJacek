@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 import * as All from "@letele/playing-cards";
 import "../App.css";
-
+import { retryContext } from "../context/contextretryProvider";
 function Game() {
 
   const cards = [
@@ -32,9 +32,9 @@ function Game() {
   let drawnCards = [];
   let [playerCards, setPlayerCards] = useState([getRandomCard(), getRandomCard()]);
   const [dealerCards, setDealerCards] = useState([getRandomCard(), cards[cards.length - 1]]);
-  let [gameStatus, setgameStatus] = useState("");
-  const [isEnd, setisEnd] = useState(false);
+  let {gameStatus, setgameStatus} = useContext(retryContext);
   const [isTrue,setisTrue] = useState(false);
+  const [isEnd,setisEnd] = useState(false);
   const [menu,setMenu] = useState(true);
   
   function getRandomCard() {
@@ -68,7 +68,7 @@ function Game() {
   const dealerSum = calculateSum(dealerCards);
   
   const HandleHit = () =>{
-    playerSum < 21 ? setPlayerCards(prevObjects => [...prevObjects, getRandomCard()]) : null;
+    playerSum <= 21 ? setPlayerCards(prevObjects => [...prevObjects, getRandomCard()]) : null;
   }
 
   const HandleStand = () =>{
@@ -81,46 +81,60 @@ function Game() {
     setisTrue(true);
   }
 
-  useEffect(()=> {
-if(!isTrue) return;
-if(playerSum > 21) return;
-setTimeout(()=>{
-  let dealerSet = [...dealerCards];
-  let dealerNewSum = calculateSum(dealerSet);
-  if(playerSum >= dealerSum){
-  while(dealerNewSum < 17){
-      const newCard = getRandomCard();
-      dealerSet.push(newCard);
-      dealerNewSum = calculateSum(dealerSet);
-      console.log(dealerNewSum);
-  }
-}
-  setDealerCards(dealerSet);
-  if(dealerNewSum > 21 || playerSum > dealerNewSum){
-    setgameStatus(" U WON!");
-  }
-  if(dealerNewSum > playerSum && dealerNewSum <= 21){
-    setgameStatus(" U LOST!");
-  }
-  if(dealerNewSum === playerSum ){
-    setgameStatus(" ITS A TIE!");
-  }
-
-  setisTrue(true);
-},1000)
-
-  }, [isTrue]);
   useEffect(() => {
-    console.log("Player sum:", playerSum, "Dealer sum:", dealerSum);
-    if (playerSum > 21) {
-      setgameStatus("U LOST!");
-      setisTrue(true);
-    } else if (dealerSum > 21) {
-      setgameStatus("U WON!");
-      setisTrue(true);
+    if (!isTrue) return;
+    if (playerSum > 21) return;
+
+    let firstTimeout, secondTimeout; // Track both timeouts
+
+    firstTimeout = setTimeout(() => {
+        let dealerSet = [...dealerCards];
+        let dealerNewSum = calculateSum(dealerSet);
+        let count = 0;
+
+        // Dealer draws cards until 20
+        if (playerSum >= dealerSum) {
+            while (dealerNewSum < 20) {
+                const newCard = getRandomCard();
+                dealerSet.push(newCard);
+                dealerNewSum = calculateSum(dealerSet);
+                count++; 
+            }
+        }
+
+        setDealerCards(dealerSet);
+
+        // Schedule second timeout for game status update
+        secondTimeout = setTimeout(() => {
+            if (dealerNewSum > 21 || playerSum > dealerNewSum) {
+                setgameStatus(" U WON!");
+            } else if (dealerNewSum > playerSum && dealerNewSum <= 21 ) {
+                setgameStatus(" U LOST!");
+            } else if (dealerNewSum === playerSum) {
+                setgameStatus(" ITS A TIE!");
+            }
+        }, 500 + 1000 * count); 
+
+    }, 1000); 
+
+    return () => {
+        clearTimeout(firstTimeout);
+        setTimeout(()=>{
+        clearTimeout(secondTimeout);
+        },500);
+    };
+
+}, [isTrue, playerSum, dealerCards]);
+useEffect(()=> {
+  setTimeout(()=> {
+    if(playerSum > 21){
+setgameStatus(" U LOST!");
     }
-  }, [playerSum, dealerSum]);
-  return (
+  },200)
+
+},[playerSum])
+
+return(
   <>
     <div className="container-dealer">
       <div className="card-container-dealer">

@@ -1,7 +1,7 @@
 import "./menu.css"
 import {useContext} from 'react';
 import {useRef} from 'react';
-import {newContext} from '../context/contextProvider';
+import {newContext} from '../context/contextmenuProvider';
 export default function MenuSection() {
     const {menu,setMenu} = useContext(newContext);
     function action(){
